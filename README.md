@@ -9,7 +9,7 @@
 
 🔒 Privacy First – Your code is protected and accessible only to you.
 
-🎯 Who Can Use It?
+# 🎯 Who Can Use It?
 
 👨‍🎓 Students – Write code at home, then access it in the lab or college PC without retyping everything.
 
