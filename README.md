@@ -1,5 +1,5 @@
 <h1 align="center"> Code Snippet Saver</h1> <p align="center">  Save once, use anywhere | 🔑 Secure & Private | 🚀 Fast & Simple </p>
-<p>I’m building a web application where users can securely upload and store their code snippets. With a simple login system (username + password), users can access their code from any device without worrying about privacy—only they can see their files.
+<p>Gyan Code is a web application where users can securely upload and store their code snippets. With a simple login system (username + password), users can access their code from any device without worrying about privacy only they can see their files.
 
 # Key Features
 
