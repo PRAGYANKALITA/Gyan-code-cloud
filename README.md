@@ -4,11 +4,17 @@
 # Key Features
 
 🔑 Secure & Easy Login – Just a username and password, no complicated setup.
+
 ☁️ Cloud Access Anywhere – Save code at home and retrieve it instantly at college, work, or another PC.
+
 🔒 Privacy First – Your code is protected and accessible only to you.
+
 🎯 Who Can Use It?
+
 👨‍🎓 Students – Write code at home, then access it in the lab or college PC without retyping everything.
+
 👩‍🏫 Teachers – Save lecture/demo snippets in advance and use them in class with ease.
+
 💻 Developers – Keep a personal library of snippets accessible from anywhere.
 
 # Why This App?
