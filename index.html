@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code Snippets - Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css">
+  
+</head>
+
+<body>
+  <div class="auth-container" id="authSection">
+    <h1>Code Snippets</h1>
+
+    <!-- Sign In -->
+    <div class="form-box">
+      <h2>Sign In</h2>
+      <input type="text" id="signinUsername" placeholder="Username">
+      <input type="password" id="signinPassword" placeholder="Password">
+      <button onclick="signIn()">Sign In</button>
+    </div>
+
+    <!-- Sign Up -->
+    <div class="form-box">
+      <h2>Create Account</h2>
+      <input type="text" id="signupUsername" placeholder="Username">
+      <input type="password" id="signupPassword" placeholder="Password">
+      <button onclick="signUp()">Sign Up</button>
+    </div>
+  </div>
+
+  <!-- Snippets Section -->
+  <div class="container" id="snippetSection" style="display: none;">
+    <aside id="sidebar">
+      <h2>My Snippets</h2>
+      <div id="titles"></div>
+      <button class="logout" onclick="logout()">Logout</button>
+    </aside>
+
+    <main id="content">
+      <h1>Add New Snippet</h1>
+      <input type="text" id="title" placeholder="Snippet Title" />
+      <textarea id="snippet" placeholder="Write your code here..."></textarea>
+      <select id="language">
+        <option value="javascript">JavaScript</option>
+        <option value="c">C</option>
+        <option value="python">Python</option>
+      </select>
+      <button onclick="addSnippet()">Save Snippet</button>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="snippetModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <pre><code id="modalCode"></code></pre>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-c.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-python.min.js"></script>
+
+  <script>
+    const API_BASE = "https://e5df6969-985c-4fce-b25d-6666daf53c06-00-1b8e9eatw0z28.pike.replit.dev"; 
+    let currentUser = localStorage.getItem("username");
+
+    function checkLogin() {
+      if (currentUser) {
+        document.getElementById("authSection").style.display = "none";
+        document.getElementById("snippetSection").style.display = "flex";
+        loadTitles();
+      }
+    }
+
+    async function signUp() {
+      const username = document.getElementById("signupUsername").value;
+      const password = document.getElementById("signupPassword").value;
+      const res = await fetch(`${API_BASE}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      alert(data.message);
+    }
+
+    async function signIn() {
+      const username = document.getElementById("signinUsername").value;
+      const password = document.getElementById("signinPassword").value;
+      const res = await fetch(`${API_BASE}/signin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem("username", data.username);
+        currentUser = data.username;
+        checkLogin();
+      } else {
+        alert(data.message);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("username");
+      currentUser = null;
+      location.reload();
+    }
+
+    async function loadTitles() {
+      const res = await fetch(`${API_BASE}/snippets/${currentUser}`);
+      const snippets = await res.json();
+      const titlesDiv = document.getElementById("titles");
+      titlesDiv.innerHTML = "";
+      snippets.forEach(snippet => {
+        const div = document.createElement("div");
+        div.className = "snippet-title";
+        div.innerHTML = "📄 " + (snippet.title || "Untitled");
+        div.onclick = () => openModal(snippet);
+        titlesDiv.appendChild(div);
+      });
+    }
+
+    async function addSnippet() {
+      const title = document.getElementById("title").value;
+      const code = document.getElementById("snippet").value;
+      const language = document.getElementById("language").value;
+      if (!code.trim()) return;
+
+      await fetch(`${API_BASE}/snippets/${currentUser}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, code, language })
+      });
+
+      document.getElementById("title").value = "";
+      document.getElementById("snippet").value = "";
+      loadTitles();
+    }
+
+    function openModal(snippet) {
+      document.getElementById("modalTitle").textContent = snippet.title;
+      const codeEl = document.getElementById("modalCode");
+      codeEl.className = `language-${snippet.language}`;
+      codeEl.textContent = snippet.code;
+      document.getElementById("snippetModal").style.display = "flex";
+      Prism.highlightAll();
+    }
+
+    function closeModal() {
+      document.getElementById("snippetModal").style.display = "none";
+    }
+
+    checkLogin();
+  </script>
+</body>
+</html>
